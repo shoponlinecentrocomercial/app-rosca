@@ -1,7 +1,7 @@
 {
   "appId": "com.symphoniertech.larosca",
   "appName": "La Rosca",
-  "webDir": "public",
+  "webDir": "www",
   "backgroundColor": "#141a24",
   "server": {
     "androidScheme": "https"
