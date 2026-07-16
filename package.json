@@ -6,12 +6,13 @@
     "build": "echo 'No build system needed'"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "ws": "^8.17.0"
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.1.2"
-  },
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/assets": "^3.0.0"
+  }
   "optionalDependencies": {
     "@capacitor/core": "^6.1.2",
     "@capacitor/android": "^6.1.2",
