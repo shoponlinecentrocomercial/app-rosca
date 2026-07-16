@@ -1,0 +1,286 @@
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #141a24;
+  color: #e8e8e8;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* huecos para el notch / barras del sistema en móviles */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+button, input, a { touch-action: manipulation; }
+
+.hidden { display: none !important; }
+
+/* ---------- overlays (lobby / sala de espera) ---------- */
+.overlay {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, #2a3a55 0%, #0e131c 100%);
+  z-index: 10;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  overflow-y: auto;
+}
+.panel {
+  background: #1c2634;
+  border: 1px solid #35475e;
+  border-radius: 12px;
+  padding: 18px 32px 22px;
+  width: 340px;
+  /* margin auto y no align-items del overlay: si el panel es más alto que
+     el viewport, el flex centrado cortaría la parte superior al scrollear */
+  margin: auto;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+}
+.panel h1 { font-size: 22px; text-align: center; }
+#logo {
+  display: block;
+  width: 240px; max-width: 100%;
+  margin: 0 auto;
+  image-rendering: pixelated;
+}
+.panel .sub { text-align: center; color: #9fb2c5; margin-bottom: 6px; }
+.panel input, .joinRow input {
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #46586c;
+  background: #131c28;
+  color: #fff;
+  font-size: 16px; /* >=16px evita el auto-zoom de iOS al enfocar */
+  width: 100%;
+}
+#codeInput { text-transform: uppercase; letter-spacing: 3px; }
+
+.cosmetics { display: flex; flex-direction: column; gap: 10px; }
+.cosmField label, .modeBlock label { font-size: 12px; color: #9fb2c5; display: block; margin-bottom: 4px; }
+.pickerGrid { display: flex; flex-wrap: wrap; gap: 5px; }
+.pickerGrid button.pick {
+  min-height: 0; width: 41px; height: 41px; padding: 2px;
+  background: #131c28; border: 2px solid #35475e; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pickerGrid button.pick.selected { border-color: #f0c541; box-shadow: 0 0 8px rgba(240,197,65,.5); }
+.pickerGrid canvas { pointer-events: none; image-rendering: pixelated; }
+button {
+  padding: 10px 16px;
+  min-height: 44px; /* tamaño táctil recomendado */
+  border: none; border-radius: 6px;
+  background: #35475e; color: #fff;
+  font-size: 15px; cursor: pointer;
+}
+button:hover { filter: brightness(1.15); }
+button.primary { background: #2e8b57; font-weight: 600; }
+button.toggle { background: #131c28; border: 2px solid #35475e; font-size: 13px; }
+button.toggle.selected { border-color: #f0c541; color: #f0c541; }
+.modeBlock { margin-top: 2px; }
+.modeRow { display: flex; gap: 8px; }
+.modeRow button { flex: 1; }
+.stepRow { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.stepLabel { font-size: 13px; color: #9fb2c5; }
+button.step { min-height: 0; width: 34px; height: 34px; padding: 0; font-size: 18px; }
+#botsCount { font-weight: 700; min-width: 16px; text-align: center; }
+.hint { font-size: 11.5px; color: #7e93a8; margin-top: 6px; line-height: 1.35; }
+.joinRow { display: flex; gap: 8px; margin-top: 8px; }
+.error { color: #ff7b72; font-size: 13px; min-height: 16px; text-align: center; }
+
+/* sala de espera */
+#waitList { display: flex; flex-direction: column; gap: 6px; }
+.waitPlayer {
+  display: flex; align-items: center; gap: 10px;
+  background: #131c28; border: 1px solid #35475e; border-radius: 8px;
+  padding: 6px 10px;
+}
+.waitPlayer canvas { image-rendering: pixelated; flex: none; }
+.waitPlayer .wname { font-weight: 600; }
+.waitPlayer .whost { margin-left: auto; font-size: 11px; color: #f0c541; }
+
+/* ---------- juego ---------- */
+#game {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: max(10px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 10px
+           max(14px, env(safe-area-inset-left));
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+#hud {
+  display: flex; align-items: center; gap: 10px;
+  position: relative;
+}
+#exitBtn, #musicBtn, #soundBtn, #statsBtn { min-height: 0; padding: 6px 12px; background: transparent; border: 1px solid #35475e; }
+#musicBtn, #soundBtn, #statsBtn { font-size: 15px; }
+#center { text-align: center; flex: 1; }
+#roomTag { font-size: 13px; color: #9fb2c5; }
+#status { font-size: 15px; font-weight: 600; margin-top: 2px; min-height: 20px; }
+
+/* marcador de jugadores: chips con avatar, nombre y medallas */
+#players { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.plq {
+  display: flex; align-items: center; gap: 7px;
+  background: #1c2634; border: 2px solid transparent; border-radius: 8px;
+  padding: 4px 10px;
+}
+.plq.active { border-color: #f0c541; box-shadow: 0 0 10px rgba(240,197,65,.35); }
+.plq.dead { opacity: .38; }
+.plq canvas { image-rendering: pixelated; flex: none; }
+.plq .qname { font-weight: 600; font-size: 13.5px; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plq .medals { display: flex; gap: 3px; }
+/* medallas: canvas de 13px con el icono pixel de la categoría (client.js) */
+.plq .medals canvas { display: block; }
+
+#screenWrap { position: relative; }
+/* width/height auto + max-*: el navegador conserva la proporción intrínseca
+   del canvas (que en vertical es más alto — ver layout() en client.js) */
+#screen {
+  width: auto; height: auto; display: block;
+  max-width: 100%;
+  max-height: calc(100dvh - 210px);
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.55);
+  touch-action: none;
+  /* el tablero ya se dibuja suave a resolución completa (client.js): sin
+     image-rendering pixelated, que lo emborronaría en bloques al reescalar */
+  background: #000;
+}
+#controls {
+  text-align: center;
+  font-size: 12px;
+  color: #7e93a8;
+  min-height: 15px;
+}
+
+/* tarjeta de pregunta (DOM: el texto con tildes y los botones táctiles no
+   caben en la fuente pixel 3×5 del canvas) */
+#qCard {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100% - 24px));
+  background: #1c2634ee;
+  border: 2px solid #35475e; border-radius: 12px;
+  padding: 12px 14px 10px;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.6);
+}
+#qTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+#qCat {
+  font-size: 12px; font-weight: 700; letter-spacing: .5px;
+  padding: 3px 10px; border-radius: 20px; color: #10151d;
+  background: #9fb2c5;
+  /* icono pixel de la categoría delante del nombre (canvas de client.js) */
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.catIcon { image-rendering: pixelated; display: block; flex: none; }
+#qWho { font-size: 12px; color: #9fb2c5; }
+#qText { font-size: 16.5px; font-weight: 600; line-height: 1.35; }
+#qOpts { display: flex; flex-direction: column; gap: 6px; }
+#qOpts button.opt {
+  text-align: left; font-size: 14.5px; padding: 9px 12px; min-height: 40px;
+  background: #131c28; border: 2px solid #35475e; border-radius: 8px;
+  /* flex para las losetas-icono del selector de categoría; el texto de las
+     opciones normales (nodo suelto) se comporta igual que antes */
+  display: flex; align-items: center; gap: 9px;
+}
+#qOpts button.opt.focused { border-color: #f0c541; }
+#qOpts button.opt.picked { border-color: #9fb2c5; background: #232f40; }
+#qOpts button.opt.good { border-color: #3dbf6e; background: #17362a; }
+#qOpts button.opt.bad { border-color: #d84040; background: #3a1c20; }
+#qOpts button.opt:disabled { cursor: default; filter: none; }
+#qTimebar { height: 6px; background: #131c28; border-radius: 3px; overflow: hidden; }
+#qTimefill { height: 100%; width: 100%; background: #f0c541; transition: width .2s linear; }
+
+#overMsg {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  background: rgba(10, 15, 20, .72);
+  border-radius: 10px;
+}
+#overText { font-size: 26px; font-weight: 700; text-shadow: 0 2px 8px #000; text-align: center; padding: 0 20px; }
+
+/* panel de estadísticas de la partida (desplegable con el botón 📊) */
+#statsPanel {
+  position: absolute; inset: 0; z-index: 5;
+  background: rgba(10, 15, 20, .94);
+  border-radius: 10px;
+  padding: 12px 12px 14px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+}
+#statsPanel h3 { text-align: center; font-size: 16px; }
+#statsClose {
+  position: absolute; top: 8px; right: 8px;
+  min-height: 0; width: 32px; height: 32px; padding: 0; font-size: 14px;
+  background: #1c2634; border: 1px solid #35475e;
+}
+.statTime { text-align: center; font-size: 16px; font-weight: 700; color: #f0c541; }
+.statPlayer {
+  background: #1c2634; border: 1px solid #35475e; border-radius: 8px;
+  padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;
+}
+.statPlayer.dead { opacity: .5; }
+.statHead { display: flex; align-items: center; gap: 8px; }
+.statHead .statName { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.statHead .statTot { font-size: 13.5px; white-space: nowrap; }
+.statTot .sc { color: #8fdc97; font-weight: 700; }
+.statTot .sw { color: #ff9b92; font-weight: 700; }
+.statCats { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+.statCat { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+.statCat b { color: #8fdc97; }
+.statCat i { color: #ff9b92; font-style: normal; }
+.statBest { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; font-size: 12.5px; color: #9fb2c5; }
+
+#bottom { display: flex; gap: 14px; align-items: stretch; }
+#chat {
+  flex: 1;
+  background: #1c2634;
+  border: 1px solid #35475e;
+  border-radius: 8px;
+  display: flex; flex-direction: column;
+  height: 110px;
+}
+#chatLog {
+  flex: 1; overflow-y: auto;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+#chatLog .sys { color: #8fa4b8; font-style: italic; }
+#chatLog .from { font-weight: 600; color: #7cc4ff; }
+#chatLog .from.me { color: #8fdc97; }
+#chatForm { display: flex; border-top: 1px solid #35475e; }
+#chatForm input {
+  flex: 1; border: none; background: transparent; color: #fff;
+  padding: 8px 12px; font-size: 16px; outline: none;
+}
+#chatForm button { border-radius: 0 0 6px 0; padding: 6px 14px; font-size: 13px; min-height: 0; }
+
+@media (max-width: 760px) {
+  #status { font-size: 12.5px; }
+  #controls { font-size: 10.5px; }
+  .plq { padding: 3px 7px; gap: 5px; }
+  .plq .qname { font-size: 12px; max-width: 64px; }
+  #bottom { flex-direction: column; }
+  #chat { height: 90px; }
+  #qText { font-size: 15px; }
+}
+
+/* Móvil en horizontal y poca altura: prioriza el tablero sobre el resto */
+@media (max-height: 480px) and (orientation: landscape) {
+  #game { padding-top: max(4px, env(safe-area-inset-top)); gap: 4px; }
+  #hud { padding: 0 4px; }
+  /* solo avatar y ficha (hijos directos): las medallas-icono se quedan */
+  .plq > canvas { display: none; }
+  #chat { height: 60px; }
+  #chatLog { font-size: 12px; }
+}

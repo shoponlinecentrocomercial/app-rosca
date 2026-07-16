@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#141a24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="La Rosca">
+<title>La Rosca</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div id="lobby" class="overlay">
+  <div class="panel">
+    <canvas id="logo" width="160" height="52"></canvas>
+    <p class="sub">El trivial pixel — de 1 a 6 jugadores</p>
+    <input id="nameInput" type="text" maxlength="16" placeholder="Tu nombre" autocomplete="off">
+    <div class="cosmetics">
+      <div class="cosmField"><label>Tu ficha</label><div id="tokenPicker" class="pickerGrid"></div></div>
+      <div class="cosmField"><label>Tu cara</label><div id="facePicker" class="pickerGrid"></div></div>
+    </div>
+    <div class="modeBlock">
+      <label>Tipo de partida</label>
+      <div class="modeRow" id="ruleRow">
+        <button id="ruleClasica" class="toggle selected">Clásica · 6 medallas</button>
+        <button id="ruleRapida" class="toggle">Rápida · 3 medallas</button>
+      </div>
+    </div>
+    <div class="modeBlock">
+      <label>Un jugador (contra bots)</label>
+      <div class="modeRow">
+        <button class="primary" data-level="facil">Fácil</button>
+        <button class="primary" data-level="normal">Normal</button>
+        <button class="primary" data-level="dificil">Difícil</button>
+      </div>
+      <div class="stepRow">
+        <span class="stepLabel">Rivales:</span>
+        <button id="botsMinus" class="step">−</button>
+        <span id="botsCount">1</span>
+        <button id="botsPlus" class="step">+</button>
+      </div>
+    </div>
+    <div class="modeBlock">
+      <label>Varios jugadores</label>
+      <div class="modeRow">
+        <button id="localBtn">Misma pantalla (2J)</button>
+        <button id="createBtn">Crear sala online</button>
+      </div>
+      <p class="hint">Online: hasta 6 jugadores. Comparte el código de sala o el enlace.</p>
+      <div class="joinRow">
+        <input id="codeInput" type="text" maxlength="4" placeholder="CÓDIGO" autocomplete="off">
+        <button id="joinBtn">Unirse</button>
+      </div>
+    </div>
+    <p id="lobbyError" class="error"></p>
+  </div>
+</div>
+
+<div id="waitRoom" class="overlay hidden">
+  <div class="panel">
+    <h1>Sala <b id="waitCode">—</b></h1>
+    <p class="sub" id="waitRule">Partida clásica · 6 medallas</p>
+    <div id="waitList"></div>
+    <p class="hint" id="waitHint">Comparte el código o el enlace para que se unan (hasta 6).</p>
+    <button id="startBtn" class="primary hidden">Empezar la partida</button>
+    <p class="sub" id="waitStatus"></p>
+    <button id="leaveWaitBtn">Salir</button>
+  </div>
+</div>
+
+<div id="game" class="hidden">
+  <header id="hud">
+    <button id="exitBtn" title="Salir al menú">←</button>
+    <button id="musicBtn" title="Silenciar música (M)">🔊</button>
+    <button id="soundBtn" title="Silenciar efectos (S)">🔔</button>
+    <button id="statsBtn" title="Estadísticas de la partida">📊</button>
+    <div id="center">
+      <div id="roomTag" class="hidden">Sala: <b id="roomCode">—</b></div>
+      <div id="status"></div>
+    </div>
+  </header>
+
+  <div id="players"></div>
+
+  <div id="screenWrap">
+    <canvas id="screen" width="1152" height="648"></canvas>
+
+    <div id="qCard" class="hidden">
+      <div id="qTop"><span id="qCat">—</span><span id="qWho"></span></div>
+      <div id="qText">—</div>
+      <div id="qOpts"></div>
+      <div id="qTimebar"><div id="qTimefill"></div></div>
+    </div>
+
+    <div id="overMsg" class="hidden">
+      <div id="overText"></div>
+      <button id="rematchBtn" class="primary">Otra partida</button>
+      <button id="menuBtn">Menú</button>
+    </div>
+
+    <div id="statsPanel" class="hidden">
+      <button id="statsClose" title="Cerrar">✕</button>
+      <h3>Estadísticas de la partida</h3>
+      <div id="statsTime" class="statTime">⏱ 0:00</div>
+      <div id="statsBody"></div>
+    </div>
+  </div>
+  <div id="controls"></div>
+
+  <div id="bottom">
+    <div id="chat" class="hidden">
+      <div id="chatLog"></div>
+      <form id="chatForm">
+        <input id="chatInput" type="text" maxlength="200" placeholder="Escribe un mensaje…" autocomplete="off">
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- game.js captura Board y Questions al cargarse: el orden importa -->
+<script src="shared/board.js"></script>
+<script src="shared/questions.js"></script>
+<script src="shared/game.js"></script>
+<script src="shared/cosmetics.js"></script>
+<script src="config.js"></script>
+<script src="client.js"></script>
+</body>
+</html>
