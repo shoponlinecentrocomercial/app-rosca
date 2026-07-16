@@ -2,12 +2,8 @@
   "name": "la-rosca",
   "version": "1.0.0",
   "description": "La Rosca — trivial pixel-retro online para 1-6 jugadores",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": ">=16"
+    "build": "echo 'No build system needed'"
   },
   "dependencies": {
     "express": "^4.19.2",
